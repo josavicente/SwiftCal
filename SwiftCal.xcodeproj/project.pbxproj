@@ -8,21 +8,25 @@
 
 /* Begin PBXBuildFile section */
 		8087DF7529899F2E003CDCD1 /* SwiftCalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8087DF7429899F2E003CDCD1 /* SwiftCalApp.swift */; };
-		8087DF7729899F2E003CDCD1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8087DF7629899F2E003CDCD1 /* ContentView.swift */; };
+		8087DF7729899F2E003CDCD1 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8087DF7629899F2E003CDCD1 /* CalendarView.swift */; };
 		8087DF7929899F2F003CDCD1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8087DF7829899F2F003CDCD1 /* Assets.xcassets */; };
 		8087DF7C29899F2F003CDCD1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8087DF7B29899F2F003CDCD1 /* Preview Assets.xcassets */; };
 		8087DF7E29899F2F003CDCD1 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8087DF7D29899F2F003CDCD1 /* Persistence.swift */; };
 		8087DF8129899F2F003CDCD1 /* SwiftCal.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8087DF7F29899F2F003CDCD1 /* SwiftCal.xcdatamodeld */; };
+		8087DF882989A786003CDCD1 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8087DF872989A786003CDCD1 /* Extensions.swift */; };
+		8087DF8A2989AF3E003CDCD1 /* StreakView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8087DF892989AF3E003CDCD1 /* StreakView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		8087DF7129899F2E003CDCD1 /* SwiftCal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftCal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8087DF7429899F2E003CDCD1 /* SwiftCalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftCalApp.swift; sourceTree = "<group>"; };
-		8087DF7629899F2E003CDCD1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		8087DF7629899F2E003CDCD1 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		8087DF7829899F2F003CDCD1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8087DF7B29899F2F003CDCD1 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		8087DF7D29899F2F003CDCD1 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		8087DF8029899F2F003CDCD1 /* SwiftCal.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SwiftCal.xcdatamodel; sourceTree = "<group>"; };
+		8087DF872989A786003CDCD1 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		8087DF892989AF3E003CDCD1 /* StreakView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,11 +60,13 @@
 			isa = PBXGroup;
 			children = (
 				8087DF7429899F2E003CDCD1 /* SwiftCalApp.swift */,
-				8087DF7629899F2E003CDCD1 /* ContentView.swift */,
+				8087DF7629899F2E003CDCD1 /* CalendarView.swift */,
 				8087DF7829899F2F003CDCD1 /* Assets.xcassets */,
 				8087DF7D29899F2F003CDCD1 /* Persistence.swift */,
 				8087DF7F29899F2F003CDCD1 /* SwiftCal.xcdatamodeld */,
 				8087DF7A29899F2F003CDCD1 /* Preview Content */,
+				8087DF872989A786003CDCD1 /* Extensions.swift */,
+				8087DF892989AF3E003CDCD1 /* StreakView.swift */,
 			);
 			path = SwiftCal;
 			sourceTree = "<group>";
@@ -143,8 +149,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8087DF8A2989AF3E003CDCD1 /* StreakView.swift in Sources */,
+				8087DF882989A786003CDCD1 /* Extensions.swift in Sources */,
 				8087DF7E29899F2F003CDCD1 /* Persistence.swift in Sources */,
-				8087DF7729899F2E003CDCD1 /* ContentView.swift in Sources */,
+				8087DF7729899F2E003CDCD1 /* CalendarView.swift in Sources */,
 				8087DF8129899F2F003CDCD1 /* SwiftCal.xcdatamodeld in Sources */,
 				8087DF7529899F2E003CDCD1 /* SwiftCalApp.swift in Sources */,
 			);
