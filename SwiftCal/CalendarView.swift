@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreData
+import WidgetKit
 
 struct CalendarView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -23,14 +24,8 @@ struct CalendarView: View {
     var body: some View {
         NavigationView {
             VStack{
-                HStack{
-                    ForEach(daysOfWeek, id: \.self) { dayOfWeek in
-                        Text(dayOfWeek)
-                            .fontWeight(.black)
-                            .foregroundColor(.orange)
-                            .frame(maxWidth: .infinity)
-                    }
-                }
+                
+                CalendarHeaderView()
                 
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
                     ForEach(days) { day in
@@ -49,6 +44,7 @@ struct CalendarView: View {
                                     day.didStudy.toggle()
                                     do{
                                         try viewContext.save()
+                                        WidgetCenter.shared.reloadTimelines(ofKind: "SwiftCalWidget")
                                         print("👆 \(day.date!.dayInt) now studied")
                                     } catch {
                                         print("Failed to save context")
