@@ -17,15 +17,15 @@ struct Provider: TimelineProvider {
         let request = Day.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(keyPath: \Day.date, ascending: true)]
         request.predicate = NSPredicate(format: " (date >= %@) AND (date <= %@)",
-                                                   Date().startOfCalendarWithPrefixDays as CVarArg,
-                                                   Date().endOfMonth as CVarArg)
+                                        Date().startOfCalendarWithPrefixDays as CVarArg,
+                                        Date().endOfMonth as CVarArg)
         return request
     }
     
     func placeholder(in context: Context) -> CalendarEntry {
         CalendarEntry(date: Date(), days: [])
     }
-
+    
     func getSnapshot(in context: Context, completion: @escaping (CalendarEntry) -> ()) {
         
         
@@ -41,7 +41,7 @@ struct Provider: TimelineProvider {
         let entry = CalendarEntry(date: Date(), days: [])
         completion(entry)
     }
-
+    
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         do {
             let days = try viewContext.fetch(dayFetchRequest)
@@ -51,7 +51,7 @@ struct Provider: TimelineProvider {
         } catch {
             print("Widget failed to fetch days in snapshot")
         }
-
+        
         
     }
 }
@@ -62,14 +62,84 @@ struct CalendarEntry: TimelineEntry {
 }
 
 struct SwiftCalWidgetEntryView : View {
+    
+    @Environment (\.widgetFamily) var family
     var entry: CalendarEntry
-    let columns = Array(repeating: GridItem(.flexible()), count: 7)
-
+    
+    
     var body: some View {
+        
+        switch family{
+        case .systemMedium:
+            MediumCalendarView(entry: entry, streakValue: calculateStreakValue() )
+        case .systemSmall, .systemLarge, .systemExtraLarge:
+            EmptyView()
+        case .accessoryCircular:
+            LockScreenCircularCalendarView(entry: entry, streakValue: calculateStreakValue())
+        case .accessoryRectangular:
+            LockScreenRectangularView(entry: entry)
+        case .accessoryInline:
+            Label("Streak \(calculateStreakValue()) days", systemImage: "swift")
+                .widgetURL(URL(string: "streak"))
+        @unknown default:
+            EmptyView()
+        }
+        
+    }
+    
+    func calculateStreakValue() -> Int {
+        guard !entry.days.isEmpty else { return 0 }
+        let nonFutureDays = entry.days.filter { $0.date!.dayInt <= Date().dayInt }
+        
+        var streakCount = 0
+        for day in nonFutureDays.reversed() {
+            if day.didStudy {
+                streakCount += 1
+            } else {
+                if day.date!.dayInt != Date().dayInt {
+                    break
+                }
+            }
+        }
+        return streakCount
+    }
+}
+
+@main
+struct SwiftCalWidget: Widget {
+    let kind: String = "SwiftCalWidget"
+    
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: kind, provider: Provider()) { entry in
+            SwiftCalWidgetEntryView(entry: entry)
+        }
+        .configurationDisplayName("Swift Study Calendar")
+        .description("You your streaks studying Swift")
+        .supportedFamilies([.systemMedium, .accessoryInline, .accessoryCircular, .accessoryRectangular])
+    }
+}
+
+struct SwiftCalWidget_Previews: PreviewProvider {
+    static var previews: some View {
+        SwiftCalWidgetEntryView(entry: CalendarEntry(date: Date(), days: []))
+            .previewContext(WidgetPreviewContext(family: .systemMedium))
+    }
+}
+
+// MARK: UI Components for widget sizes
+
+private struct MediumCalendarView: View {
+    
+    var entry: CalendarEntry
+    var streakValue: Int
+    let columns = Array(repeating: GridItem(.flexible()), count: 7)
+    
+    var body:  some View {
+        
         HStack{
             Link(destination: URL(string: "streak")!) {
                 VStack{
-                    Text("\(calculateStreakValue())")
+                    Text("\(streakValue)")
                         .font(.system(size: 70,design: .rounded))
                         .bold()
                         .foregroundColor(.orange)
@@ -103,43 +173,59 @@ struct SwiftCalWidgetEntryView : View {
                 }.padding(.leading, 6)
             }
         }.padding()
+        
+    }
+}
+
+private struct LockScreenCircularCalendarView: View {
+    
+    var entry: CalendarEntry
+    var streakValue: Int
+    
+    var currentCalendarDays: Int {
+        entry.days.filter { $0.date?.monthInt == Date().monthInt }.count
     }
     
-    func calculateStreakValue() -> Int {
-        guard !entry.days.isEmpty else { return 0 }
-        let nonFutureDays = entry.days.filter { $0.date!.dayInt <= Date().dayInt }
+    var daysStudied: Int {
+        entry.days.filter { $0.date?.monthInt == Date().monthInt }.filter { $0.didStudy }.count
+    }
+    
+    var body:  some View {
+        Gauge(value: Double(daysStudied), in: 1...Double(currentCalendarDays)) {
+            Image(systemName: "swift")
+        } currentValueLabel: {
+            Text("\(daysStudied)")
+        }.gaugeStyle(.accessoryCircular)
         
-        var streakCount = 0
-        for day in nonFutureDays.reversed() {
-            if day.didStudy {
-                streakCount += 1
-            } else {
-                if day.date!.dayInt != Date().dayInt {
-                    break
+    }
+}
+
+private struct LockScreenRectangularView: View {
+    
+    var entry: CalendarEntry
+    let columns = Array(repeating: GridItem(.flexible()), count: 7)
+    
+    var body:  some View {
+        
+        LazyVGrid(columns: columns, spacing: 4) {
+            ForEach(entry.days){ day in
+                if day.date!.monthInt != Date().monthInt {
+                    Text("")
+                } else {
+                    if day.didStudy {
+                        Image(systemName: "swift")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 7, height: 7)
+                    }
+                    Text(day.date!.formatted(.dateTime.day()))
+                        .font(.system(size: 7))
+                        .frame(maxWidth: .infinity)
+                        
                 }
             }
-        }
-        return streakCount
-    }
-}
-
-@main
-struct SwiftCalWidget: Widget {
-    let kind: String = "SwiftCalWidget"
-
-    var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: Provider()) { entry in
-            SwiftCalWidgetEntryView(entry: entry)
-        }
-        .configurationDisplayName("Swift Study Calendar")
-        .description("You your streaks studying Swift")
-        .supportedFamilies([.systemMedium])
-    }
-}
-
-struct SwiftCalWidget_Previews: PreviewProvider {
-    static var previews: some View {
-        SwiftCalWidgetEntryView(entry: CalendarEntry(date: Date(), days: []))
-            .previewContext(WidgetPreviewContext(family: .systemMedium))
+        }.padding()
+        
+        
     }
 }
